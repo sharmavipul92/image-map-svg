@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #test_slide { 
+      cursor: crosshair; 
+      border: solid;
+      background-image: url('./images/main.jpg');
+      background-position:center;
+      background-repeat:no-repeat;
+      background-size:cover;
+      height:1800px;
+      width:1142px;
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.7.1/svg.min.js" type="text/javascript"></script>
+  <script src="https://svgjs.com/svg.draw.js/demo/svg.draw.min.js" type="text/javascript"></script>
+
+  <div id="test_slide">    
+  </div>
+  <button id="create_svg_rect" >Create SVG Rect</button>
+  <script>
+    document.addEventListener('DOMContentLoaded',() => {
+
+    let rect, drawing = new SVG('test_slide').size('100%', '100%');
+    console.log(drawing);
+
+    drawing.on('mousedown', function(e){
+      rect && rect.draw(e);
+    });
+
+    drawing.on('mouseup', function(e){
+      if (rect) {
+        rect.draw('stop', e);
+        console.log(rect.svg());
+        rect = null;
+      } 
+    });
+
+    document.getElementById("create_svg_rect").addEventListener('click', function() {
+      rect = drawing.rect().attr('stroke-width',1).attr('fill','none');
+    });
+
+    })
+  </script>
+  
+</body>
+</html>

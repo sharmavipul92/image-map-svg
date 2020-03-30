@@ -1,0 +1,62 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="../scripts/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="../scripts/jquery-ui.min.css">
+<style>
+  #imagemaps-rect-0-0 {
+    background-color: rgb(132, 132, 132, 0.7);
+  }
+</style>
+
+
+<body>
+  <div class="img-map" style="">
+    <img class="mw-100" src="./images/main.jpg" draggable="false">
+    <table class="table" id="image-mapper-table">
+        <thead>
+          <tr>
+            <th>Link</th>
+            <th>Coords</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="6" style="text-align: right">
+              <button type="button" class="btn btn-danger btn-sm btn-add-area">Add New Area</button>
+            </th>
+          </tr>
+        </tfoot>
+    </table>
+  </div>
+</body>
+
+<script type="text/javascript" src="../scripts/image-map.js"></script>
+<script type="text/javascript">
+  $('.img-map').imageMaps({
+    addBtn: '.btn-add-area',
+        rectWidth: 100,
+        rectHeight: 60,
+        areaHref: '.area-href',
+        areaTarget: '.area-target',
+        btnDelete: '.btn-delete',
+    output: '.imagemaps-output',
+    stopCallBack: function(active, coords){
+      console.log(active[0].id);
+      console.log(coords);
+      $(`#${active[0].id}`).css("background-color", 'rgb(132,132,132,0.7)');
+    }
+  });
+
+  $('.btn-get-map').on('click', function(){
+    let oParent = $(this).parent().parent().parent();
+    let result  = oParent.find('.imagemaps-wrapper').clone();
+    result.children('div').remove();
+    console.log(result.html());
+    alert(result.html());
+  });
+</script>
+
+
