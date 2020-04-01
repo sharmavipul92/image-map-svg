@@ -1,40 +1,139 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="../scripts/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="../scripts/jquery-ui.min.css">
-<style>
-  #imagemaps-rect-0-0 {
-    background-color: rgb(132, 132, 132, 0.7);
-  }
-</style>
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="../scripts/jquery-ui.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+  <style>
+    #imagemaps-rect-0-0 {
+      background-color: rgb(132, 132, 132, 0.7);
+    }
+    .page-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .table-image {
+      max-width: 500px;
+      max-height: 300px;
+    }
+  </style>
+  <title>Document</title>
+</head>
 <body>
-  <div class="img-map" style="">
-    <img class="mw-100" src="./images/main.jpg" draggable="false">
-    <table class="table" id="image-mapper-table">
-        <thead>
-          <tr>
-            <th>Link</th>
-            <th>Coords</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="6" style="text-align: right">
-              <button type="button" class="btn btn-danger btn-sm btn-add-area">Add New Area</button>
-            </th>
-          </tr>
-        </tfoot>
-    </table>
+  <div class="img-map">
+    <img id="pageImage" class="mw-100" src="" draggable="false">
   </div>
+  <div class="page-controls">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center m-3">
+        <li class="page-item active"><span class="page-link">1</a></li>
+        <li class="page-item"><span class="page-link">2</a></li>
+        <li class="page-item"><span class="page-link">3</a></li>
+        <li class="page-item"><span class="page-link">4</a></li>
+        <li class="page-item"><span class="page-link">5</a></li>
+        <li class="page-item"><span class="page-link">6</a></li>
+        <li class="page-item"><span class="page-link">7</a></li>
+        <li class="page-item"><span class="page-link">8</a></li>
+      </ul>
+    </nav>
+    <div class="form-group m-3"> <!-- Date input -->
+      <input id="date-picker" class="form-control" id="date" name="date" placeholder="YYYY-MM-DD" type="text"/>
+    </div>
+  </div>
+
+  <table class="table my-5" id="image-mapper-table">
+    <thead>
+      <tr>
+        <th colspan="6" style="text-align: right">
+          <button type="button" class="btn btn-danger btn-sm btn-add-area">Add New Area</button>
+        </th>
+      </tr>
+      <tr>
+        <th>Select</th>
+        <th>Image</th>
+        <th>Id</th>
+        <th>Coordinates</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <tfoot>
+    <tr>
+      <th colspan="6" style="text-align: right">
+        <button id="submit-coordinates" type="button" class="btn btn-danger btn-sm btn-add-area">Submit</button>
+      </th>
+    </tr>
+  </tfoot>
+
 </body>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="../scripts/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script type="text/javascript" src="../scripts/image-map.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
 <script type="text/javascript">
+  let pageNumber = 1;
+  let date;
+  $(document).ready(() => {
+    $('ul.pagination li').on('click',function(e){
+      pageNumber = e.target.innerHTML;
+      $('ul.pagination').find("li.active").removeClass('active');
+      $(this).addClass('active');
+      getData();
+    });
+
+    var options={
+      format: 'yyyy-mm-dd',
+      todayHighlight: true,
+      autoclose: true,
+      endDate: '+1d'
+    };
+    $('#date-picker').datepicker(options);
+    $('#date-picker').on('changeDate', function() {
+      date = $('#date-picker').datepicker('getFormattedDate');
+      getData();
+    });
+
+  });
+
+  function getData() {
+    console.log(pageNumber, date);
+    if(pageNumber && date) {
+      $.get(`http://localhost:8080/news/${date}/${pageNumber}`, function( data ) {
+        console.log(data);
+        let { code, news, mainPage } = data;
+        if(code === 200) {
+          $('#pageImage').attr('src', mainPage);
+          let tableStr = '';
+          for(let snippet of news) {
+            tableStr += `
+              <tr>
+                <td><input name="snippets" type="radio"></td>
+                <td><img class="table-image" src="${snippet.link}" draggable="false"></td>
+                <td>${snippet.id}</td>
+                <td><input type="text"></td>
+              </tr>
+            `;
+          }
+          console.log(tableStr);
+          $('#image-mapper-table tbody').html(tableStr);
+        }
+      });
+    }
+  }
+
+  $(document).on('click','#image-mapper-table tbody tr' , function() {
+    $(this).find('td input:radio').prop('checked', true);
+    console.log($(this));
+})
+
   $('.img-map').imageMaps({
     addBtn: '.btn-add-area',
         rectWidth: 100,
@@ -59,4 +158,5 @@
   });
 </script>
 
+</html>
 
